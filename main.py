@@ -1,5 +1,7 @@
-from fastapi import FastAPI
 import random
+from typing import List
+
+from fastapi import FastAPI
 
 app = FastAPI()
 
@@ -30,13 +32,12 @@ def read_random_number():
 ```""",
     }
 
-import random
 
 @app.get("/tango")
-def random_select_word(num:int,tango_all:List[tuple]):
-    tango_list=[]
+def random_select_word():
+    num: int = 2
+    tango_all: List[tuple] = [("moji", "文字", "もじ")]
+    tango_list = []
     for i in range(num):
-        tango_list.append(tango_all[random.randint(0,num-1)])
-    return {
-        "tango_list":tango_list
-    }
+        tango_list.append(tango_all[random.randint(0, num - 1)])
+    return {"tango_list": tango_list}
