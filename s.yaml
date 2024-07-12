@@ -1,8 +1,3 @@
-# ------------------------------------
-#   官方手册: https://manual.serverless-devs.com/user-guide/aliyun/#fc3
-#   有问题快来钉钉群问一下吧：33947367
-# ------------------------------------
-
 edition: 3.0.0
 name: fastapi-app
 access: 'undefined'
@@ -30,7 +25,7 @@ resources:
           - python3
         args:
           - '-u'
-          - index.py
+          - main.py
       functionName: 'fastapi-64cd'
       code: ./code
   fc3_domain_0:
