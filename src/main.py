@@ -3,8 +3,8 @@ from datetime import datetime
 from typing import List, Tuple
 
 import uvicorn
-from fastapi import FastAPI, HTTPException, Path
-from fastapi.responses import HTMLResponse
+from fastapi import FastAPI, File, HTTPException, Path, Response
+from fastapi.responses import FileResponse, HTMLResponse
 
 app = FastAPI()
 
@@ -15,6 +15,11 @@ async def hello():
         "time": datetime.now(datetime.timezone.utc).isoformat(),
         "note": "Hello World!",
     }
+
+
+@app.get("/favicon.ico", response_class=FileResponse)
+async def favicon():
+    return FileResponse(path="static/favicon.ico")
 
 
 @app.get("/random/number/{number_range}")
