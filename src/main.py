@@ -10,7 +10,7 @@ app = FastAPI()
 
 
 @app.get("/")
-def hello():
+async def hello():
     return {
         "time": datetime.now(datetime.timezone.utc).isoformat(),
         "note": "Hello World!",
