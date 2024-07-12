@@ -20,22 +20,15 @@ def hello():
 @app.get("/random/number/{number_range}")
 async def read_random_number(
     number_range: int = Path(
-        None,
-        description=(
-            "The maximum value for the random number generation."
-            + "If not provided, the default is 100."
-        ),
+        default=100,
+        description="The max range value for the random number generation. Default is 100.",
+        ge=1,
     )
 ):
-    if number_range is None:
-        max_value = 100
-    else:
-        max_value = number_range
-
-    random_number = random.randint(1, max_value)
+    random_number = random.randint(1, number_range)
     return {
         "random_number": random_number,
-        "note": f"Random number between 1 and {max_value}.",
+        "note": f"Random number between 1 and {number_range}.",
     }
 
 
