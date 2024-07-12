@@ -11,7 +11,7 @@ resources:
         - run: >-
             export PATH=/usr/local/envs/py310/bin:$PATH && pip3 install -r
             requirements.txt -t .
-          path: ./code
+          path: ./src
     props: 
       region: ${vars.region} 
       description: Serverless Devs Web Framework Function
@@ -19,7 +19,7 @@ resources:
       timeout: 60
       environmentVariables:
         PATH: >-
-          /var/fc/lang/python3.10/bin:/usr/local/bin/apache-maven/bin:/usr/local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/local/ruby/bin:/opt/bin:/code:/code/bin
+          /var/fc/lang/python3.10/bin:/usr/local/bin/apache-maven/bin:/usr/local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/local/ruby/bin:/opt/bin:/src:/src/bin
       customRuntimeConfig:
         command:
           - python3
@@ -27,7 +27,7 @@ resources:
           - '-u'
           - main.py
       functionName: 'fastapi-64cd'
-      code: ./code
+      code: ./src
   fc3_domain_0:
     component: fc3-domain
     props:
