@@ -3,7 +3,7 @@ from datetime import datetime
 from typing import List, Tuple
 
 import uvicorn
-from fastapi import FastAPI, HTTPException, Query
+from fastapi import FastAPI, HTTPException, Path
 from fastapi.responses import HTMLResponse
 
 app = FastAPI()
@@ -17,9 +17,9 @@ def hello():
     }
 
 
-@app.get("/random/number/{range}")
+@app.get("/random/number/{number_range}")
 async def read_random_number(
-    range: int = Query(
+    number_range: int = Path(
         None,
         description=(
             "The maximum value for the random number generation."
@@ -27,10 +27,10 @@ async def read_random_number(
         ),
     )
 ):
-    if range is None:
+    if number_range is None:
         max_value = 100
     else:
-        max_value = range
+        max_value = number_range
 
     random_number = random.randint(1, max_value)
     return {
