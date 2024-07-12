@@ -4,7 +4,7 @@ import random
 app = FastAPI()
 
 
-@app.get("/random-number")
+@app.get("/")
 def read_random_number():
     random_number = random.randint(1, 30)
     return {
@@ -28,4 +28,15 @@ def read_random_number():
 
 **nhg bky sms**
 ```""",
+    }
+
+import random
+
+@app.get("/tango")
+def random_select_word(num:int,tango_all:List[tuple]):
+    tango_list=[]
+    for i in range(num):
+        tango_list.append(tango_all[random.randint(0,num-1)])
+    return {
+        "tango_list":tango_list
     }
