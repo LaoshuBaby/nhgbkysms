@@ -1,3 +1,4 @@
+import os
 import random
 from datetime import datetime
 from typing import List, Tuple
@@ -67,6 +68,19 @@ async def random_select_word(unit: str, num: int):
 async def about():
     with open("pages/about.html", "r", encoding="utf-8") as f:
         return HTMLResponse(f.read())
+
+
+@app.get("/about/status/tango")
+async def about():
+    return {
+        "dict_count": int(
+            len(
+                os.listdir(
+                    os.path.join(os.path.dirname(__file__), "data", "tango")
+                )
+            )
+        )
+    }
 
 
 if __name__ == "__main__":
