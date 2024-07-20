@@ -10,6 +10,9 @@ from fastapi.responses import FileResponse, HTMLResponse
 app = FastAPI()
 
 
+# def get_tango_list
+
+
 @app.get("/")
 async def hello():
     return {
@@ -20,7 +23,9 @@ async def hello():
 
 @app.get("/favicon.ico", response_class=FileResponse)
 async def favicon():
-    return FileResponse(path="static/favicon.ico")
+    return FileResponse(
+        path=os.path.join(os.path.dirname(__file__), "static", "favicon.ico")
+    )
 
 
 @app.get("/random/number/{number_range}")
@@ -66,11 +71,15 @@ async def random_select_word(unit: str, num: int):
 
 @app.get("/about")
 async def about():
-    with open("pages/about.html", "r", encoding="utf-8") as f:
+    with open(
+        os.path.join(os.path.dirname(__file__), "pages", "about.html"),
+        "r",
+        encoding="utf-8",
+    ) as f:
         return HTMLResponse(f.read())
 
 
-@app.get("/about/status/tango")
+@app.get("/status/tango")
 async def about():
     return {
         "dict_count": int(
@@ -81,6 +90,11 @@ async def about():
             )
         )
     }
+
+
+@app.get("/status/listdir")
+async def about():
+    return {"dict_count": int(len(os.listdir()))}
 
 
 if __name__ == "__main__":
