@@ -1,7 +1,7 @@
 import os
 import random
 from datetime import datetime
-from typing import List, Tuple
+from typing import List, Optional
 
 import uvicorn
 from fastapi import FastAPI, File, HTTPException, Path, Response
@@ -50,23 +50,42 @@ async def read_random_number(
 
 @app.get("/tango/{unit}/{num}")
 async def random_select_word(unit: str, num: int):
-    tango_all: List[Tuple[str, str, str]] = [
-        ("moji", "文字", "もじ"),
-        ("ningen", "人間", "にんげん"),
-        ("sakura", "桜", "さくら"),
-        ("tsuki", "月", "つき"),
-        ("hoshi", "星", "ほし"),
-    ]
+    if unit:
+        if unit == "test" or unit == "testcase":
+            tango_all: List[Optional[tuple]] = [
+                ("moji", "文字", "もじ"),
+                ("ningen", "人間", "にんげん"),
+                ("sakura", "桜", "さくら"),
+                ("tsuki", "月", "つき"),
+                ("hoshi", "星", "ほし"),
+            ]
+        else:
+            tango_all: List[Optional[tuple]] = []
+            if unit == "daiichika":
+                with open(
+                    os.path.join(
+                        os.path.dirname(__file__),
+                        "data",
+                        "tango",
+                        "daiichika.csv",
+                    )
+                ) as f:
+                    datas = f.read()
+                tango_all = [(datas)]
+            else:
+                return {"warning": "invalid unit"}
 
-    if num > len(tango_all):
-        raise HTTPException(
-            status_code=400,
-            detail="Number of words requested exceeds available words.",
-        )
+        if num > len(tango_all):
+            raise HTTPException(
+                status_code=400,
+                detail="Number of words requested exceeds available words.",
+            )
 
-    tango_list = random.sample(tango_all, num)
+        tango_list = random.sample(tango_all, num)
 
-    return {"unit": unit, "tango_list": tango_list}
+        return {"unit": unit, "tango_list": tango_list}
+    else:
+        return {"warning": "without unit"}
 
 
 @app.get("/about")
