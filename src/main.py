@@ -1,7 +1,8 @@
+import csv
 import os
 import random
 from datetime import datetime
-from typing import List, Optional
+from typing import Dict, List, Optional
 
 import uvicorn
 from fastapi import FastAPI, File, HTTPException, Path, Response
@@ -53,14 +54,14 @@ async def random_select_word(unit: str, num: int):
     if unit:
         if unit == "test" or unit == "testcase":
             tango_all: List[Optional[tuple]] = [
-                ("moji", "文字", "もじ"),
-                ("ningen", "人間", "にんげん"),
-                ("sakura", "桜", "さくら"),
-                ("tsuki", "月", "つき"),
-                ("hoshi", "星", "ほし"),
+                {"romanji": "moji", "kanji": "文字", "hiragana": "もじ"},
+                {"romanji": "ningen", "kanji": "人間", "hiragana": "にんげん"},
+                {"romanji": "sakura", "kanji": "桜", "hiragana": "さくら"},
+                {"romanji": "tsuki", "kanji": "月", "hiragana": "つき"},
+                {"romanji": "hoshi", "kanji": "星", "hiragana": "ほし"},
             ]
         else:
-            tango_all: List[Optional[tuple]] = []
+            tango_all: List[Optional[Dict[str, str]]] = []
             if unit == "daiichika":
                 with open(
                     os.path.join(
@@ -68,10 +69,14 @@ async def random_select_word(unit: str, num: int):
                         "data",
                         "tango",
                         "daiichika.csv",
-                    )
-                ) as f:
-                    datas = f.read()
-                tango_all = [(datas)]
+                    ),
+                    mode="r",
+                    newline="",
+                    encoding="utf-8",
+                ) as file:
+                    reader = csv.DictReader(file)
+                    for row in reader:
+                        tango_all.append(row)
             else:
                 return {"warning": "invalid unit"}
 
