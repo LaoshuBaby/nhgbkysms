@@ -5,6 +5,7 @@ import random
 from datetime import datetime
 from typing import Dict, List, Optional
 
+import requests
 import uvicorn
 from fastapi import FastAPI, File, HTTPException, Path, Response
 from fastapi.responses import FileResponse, HTMLResponse
@@ -21,8 +22,6 @@ def get_resource_url(dictbook: str, collection: str) -> str:
 def get_tango(uri: str = "") -> str:
     if type(uri) == type("str"):
         if uri[0:4] == "http":
-            import requests
-
             r = requests.get(url=uri)
             return r.content.decode("utf-8")
         else:
@@ -116,7 +115,8 @@ async def random_select_word(unit: str, num: int):
             tango_all: List[Optional[Dict[str, str]]] = []
             if unit == "minnanonihongo":
                 tango_all = parse_tango(
-                    dictbook="minnanonihongo.fltrp.shokyuu1", collection="tango.6.csv"
+                    dictbook="minnanonihongo.fltrp.shokyuu1",
+                    collection="tango.6.csv",
                 )
             else:
                 return {"warning": "invalid unit"}
