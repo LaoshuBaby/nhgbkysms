@@ -18,12 +18,17 @@ def get_tango(uri: str = None) -> str:
         pass
 
 
+def parse_tango() -> List[tuple]:
+    return [(0)]
+
 
 def get_tango_list(mode: str = "local", collection: str = "") -> List[str]:
     if mode == "local":
-        pass
+        return os.listdir(
+            os.path.join(os.path.dirname(__file__), "data", "tango")
+        )
     if mode == "network":
-        pass
+        return []
 
 
 @app.get("/")
@@ -89,6 +94,9 @@ async def random_select_word(unit: str, num: int):
                     reader = csv.DictReader(file)
                     for row in reader:
                         tango_all.append(row)
+                # tango_all = parse_tango(
+                #     dictbook="minnanonihongo.fltrp.shokyuu1", collection="6"
+                # )
             else:
                 return {"warning": "invalid unit"}
 
@@ -117,20 +125,12 @@ async def about():
 
 @app.get("/status/tango")
 async def about():
-    return {
-        "dict_count": int(
-            len(
-                os.listdir(
-                    os.path.join(os.path.dirname(__file__), "data", "tango")
-                )
-            )
-        )
-    }
+    return {"dict_count": int(len(get_tango_list()))}
 
 
 @app.get("/status/listdir")
 async def about():
-    return {"dict_count": int(len(os.listdir()))}
+    return {"dict_count": os.listdir()}
 
 
 if __name__ == "__main__":
