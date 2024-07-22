@@ -11,7 +11,19 @@ from fastapi.responses import FileResponse, HTMLResponse
 app = FastAPI()
 
 
-# def get_tango_list
+def get_tango(uri: str = None) -> str:
+    if uri[0:4] == "http":
+        pass
+    else:
+        pass
+
+
+
+def get_tango_list(mode: str = "local", collection: str = "") -> List[str]:
+    if mode == "local":
+        pass
+    if mode == "network":
+        pass
 
 
 @app.get("/")
