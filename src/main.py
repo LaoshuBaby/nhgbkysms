@@ -142,6 +142,26 @@ async def about():
         return HTMLResponse(f.read())
 
 
+@app.get("/dashboard")
+async def about():
+    with open(
+        os.path.join(os.path.dirname(__file__), "pages", "result.html"),
+        "r",
+        encoding="utf-8",
+    ) as f:
+        return HTMLResponse(f.read())
+
+
+@app.get("/result")
+async def about():
+    with open(
+        os.path.join(os.path.dirname(__file__), "pages", "result.html"),
+        "r",
+        encoding="utf-8",
+    ) as f:
+        return HTMLResponse(f.read())
+
+
 @app.get("/status/tango")
 async def about():
     return {"dict_count": int(len(get_tango_list()))}

@@ -5,6 +5,10 @@
     <title>単語リスト</title>
 </head>
 <body>
+    <div src="https://laoshubaby.oss-cn-beijing.aliyuncs.com/static/nihongo/nhgbkysms.lock" width="1px" height="1px" />
+    <input type="number" id="rowCount" placeholder="Enter number of rows" min="1">
+    <button id="startButton">START</button>
+
     <table id="tangoTable" border="1">
         <thead>
             <tr>
@@ -20,34 +24,39 @@
     </table>
 
     <script>
-        // API返回的数据
-        const data = {
-            "unit": "minnanonihongo",
-            "tango_list": [
-                {"Japanese": "します", "Reading": "", "Class": "0", "Translation": "动III", "Usage": "做，干"},
-                {"Japanese": "しゅくだい", "Reading": "宿題", "Class": "①", "Translation": "名", "Usage": "作业"},
-                {"Japanese": "サッカー", "Reading": "soccer", "Class": "①", "Translation": "<名>", "Usage": "足球(～をします:踢足球)"},
-                {"Japanese": "フランスや", "Reading": "", "Class": "②", "Translation": "名", "Usage": "法国屋"},
-                {"Japanese": "いいですね", "Reading": "", "Class": "", "Translation": "", "Usage": "好啊"}
-            ]
-        };
+        document.getElementById('startButton').addEventListener('click', () => {
+            const rowCount = document.getElementById('rowCount').value;
+            if (rowCount && rowCount > 0) {
+                // 访问URL并获取数据
+                fetch(`http://fastapi-64cd.fcv3.1377713435577244.cn-qingdao.fc.devsapp.net/tango/minnanonihongo/${rowCount}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        // 获取表格的tbody元素
+                        const tbody = document.querySelector('#tangoTable tbody');
+                        // 清空之前的内容
+                        tbody.innerHTML = '';
 
-        // 获取表格的tbody元素
-        const tbody = document.querySelector('#tangoTable tbody');
+                        // 遍历数据并生成表格行
+                        data.tango_list.forEach(item => {
+                            const tr = document.createElement('tr');
 
-        // 遍历数据并生成表格行
-        data.tango_list.forEach(item => {
-            const tr = document.createElement('tr');
+                            // 创建每一列并添加到行中
+                            for (const key in item) {
+                                const td = document.createElement('td');
+                                td.textContent = item[key];
+                                tr.appendChild(td);
+                            }
 
-            // 创建每一列并添加到行中
-            for (const key in item) {
-                const td = document.createElement('td');
-                td.textContent = item[key];
-                tr.appendChild(td);
+                            // 将行添加到tbody中
+                            tbody.appendChild(tr);
+                        });
+                    })
+                    .catch(error => {
+                        console.error('Error fetching data:', error);
+                    });
+            } else {
+                alert('Please enter a valid number of rows.');
             }
-
-            // 将行添加到tbody中
-            tbody.appendChild(tr);
         });
     </script>
 </body>
