@@ -1,4 +1,5 @@
 import csv
+import io
 import os
 import random
 from datetime import datetime
@@ -10,16 +11,50 @@ from fastapi.responses import FileResponse, HTMLResponse
 
 app = FastAPI()
 
+BASE_URL = "https://laoshubaby.oss-cn-beijing.aliyuncs.com/static/nihongo/nhgbkysms.lock"
 
-def get_tango(uri: str = None) -> str:
-    if uri[0:4] == "http":
-        pass
+
+def get_resource_url(dictbook: str, collection: str) -> str:
+    return BASE_URL.replace("nhgbkysms.lock", "") + dictbook + "/" + collection
+
+
+def get_tango(uri: str = "") -> str:
+    if type(uri) == type("str"):
+        if uri[0:4] == "http":
+            import requests
+
+            r = requests.get(url=uri)
+            return r.content.decode("utf-8")
+        else:
+            pass
     else:
-        pass
+        print(".")
 
 
-def parse_tango() -> List[tuple]:
-    return [(0)]
+def parse_tango(
+    dictbook: str = "dictbook", collection: str = "collection"
+) -> List[Optional[Dict[str, str]]]:
+    if (dictbook == "" or dictbook == "dictbook") or (
+        collection == "" or collection == "collection"
+    ):
+        content = get_tango(
+            uri=get_resource_url(
+                "minnanonihongo.fltrp.shokyuu1", "tango.1.csv"
+            )
+        )
+    else:
+        content = get_tango(uri=get_resource_url(dictbook, collection))
+
+    csv_file = io.StringIO(content)
+
+    tango_all = []
+    reader = csv.DictReader(csv_file)
+    for row in reader:
+        tango_all.append(row)
+
+    print("+++DEBUG+++")
+    print(tango_all)
+    return tango_all
 
 
 def get_tango_list(mode: str = "local", collection: str = "") -> List[str]:
@@ -79,24 +114,10 @@ async def random_select_word(unit: str, num: int):
             ]
         else:
             tango_all: List[Optional[Dict[str, str]]] = []
-            if unit == "daiichika":
-                with open(
-                    os.path.join(
-                        os.path.dirname(__file__),
-                        "data",
-                        "tango",
-                        "daiichika.csv",
-                    ),
-                    mode="r",
-                    newline="",
-                    encoding="utf-8",
-                ) as file:
-                    reader = csv.DictReader(file)
-                    for row in reader:
-                        tango_all.append(row)
-                # tango_all = parse_tango(
-                #     dictbook="minnanonihongo.fltrp.shokyuu1", collection="6"
-                # )
+            if unit == "minnanonihongo":
+                tango_all = parse_tango(
+                    dictbook="minnanonihongo.fltrp.shokyuu1", collection="tango.6.csv"
+                )
             else:
                 return {"warning": "invalid unit"}
 
