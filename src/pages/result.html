@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>単語リスト</title>
+</head>
+<body>
+    <table id="tangoTable" border="1">
+        <thead>
+            <tr>
+                <th>Japanese</th>
+                <th>Reading</th>
+                <th>Class</th>
+                <th>Translation</th>
+                <th>Usage</th>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+
+    <script>
+        // API返回的数据
+        const data = {
+            "unit": "minnanonihongo",
+            "tango_list": [
+                {"Japanese": "します", "Reading": "", "Class": "0", "Translation": "动III", "Usage": "做，干"},
+                {"Japanese": "しゅくだい", "Reading": "宿題", "Class": "①", "Translation": "名", "Usage": "作业"},
+                {"Japanese": "サッカー", "Reading": "soccer", "Class": "①", "Translation": "<名>", "Usage": "足球(～をします:踢足球)"},
+                {"Japanese": "フランスや", "Reading": "", "Class": "②", "Translation": "名", "Usage": "法国屋"},
+                {"Japanese": "いいですね", "Reading": "", "Class": "", "Translation": "", "Usage": "好啊"}
+            ]
+        };
+
+        // 获取表格的tbody元素
+        const tbody = document.querySelector('#tangoTable tbody');
+
+        // 遍历数据并生成表格行
+        data.tango_list.forEach(item => {
+            const tr = document.createElement('tr');
+
+            // 创建每一列并添加到行中
+            for (const key in item) {
+                const td = document.createElement('td');
+                td.textContent = item[key];
+                tr.appendChild(td);
+            }
+
+            // 将行添加到tbody中
+            tbody.appendChild(tr);
+        });
+    </script>
+</body>
+</html>

@@ -51,8 +51,6 @@ def parse_tango(
     for row in reader:
         tango_all.append(row)
 
-    print("+++DEBUG+++")
-    print(tango_all)
     return tango_all
 
 
