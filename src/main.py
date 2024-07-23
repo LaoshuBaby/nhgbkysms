@@ -13,6 +13,10 @@ from fastapi.responses import FileResponse, HTMLResponse
 app = FastAPI()
 
 BASE_URL = "https://laoshubaby.oss-cn-beijing.aliyuncs.com/static/nihongo/nhgbkysms.lock"
+ENDPOINT = {
+    "cn": "http://fastapi-64cd.fcv3.1377713435577244.cn-qingdao.fc.devsapp.net/",
+    "global": "http://nhgbkysms.zeabur.app/",
+}
 
 
 def get_resource_url(dictbook: str, collection: str) -> str:
@@ -149,7 +153,9 @@ async def about():
         "r",
         encoding="utf-8",
     ) as f:
-        return HTMLResponse(f.read())
+        return HTMLResponse(
+            f.read().replace("{{{endpoint}}}", ENDPOINT["global"])
+        )
 
 
 @app.get("/result")
@@ -159,7 +165,7 @@ async def about():
         "r",
         encoding="utf-8",
     ) as f:
-        return HTMLResponse(f.read())
+        return HTMLResponse(f.read().replace("{{{endpoint}}}", ENDPOINT["cn"]))
 
 
 @app.get("/status/tango")

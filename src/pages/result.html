@@ -28,7 +28,7 @@
             const rowCount = document.getElementById('rowCount').value;
             if (rowCount && rowCount > 0) {
                 // 访问URL并获取数据
-                fetch(`http://fastapi-64cd.fcv3.1377713435577244.cn-qingdao.fc.devsapp.net/tango/minnanonihongo/${rowCount}`)
+                fetch(`{{{endpoint}}}tango/minnanonihongo/${rowCount}`)
                     .then(response => response.json())
                     .then(data => {
                         // 获取表格的tbody元素
