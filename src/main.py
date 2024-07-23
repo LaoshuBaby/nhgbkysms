@@ -102,10 +102,12 @@ async def read_random_number(
     }
 
 
-@app.get("/tango/{unit}/{num}")
-async def random_select_word(unit: str, num: int):
-    if unit:
-        if unit == "test" or unit == "testcase":
+@app.get("/tango/{dictbook}/{collection}/{num}")
+async def random_select_word(dictbook: str,collection:str, num: int):
+    if dictbook:
+        if ".csv" not in collection:
+            collection+=".csv"
+        if dictbook == "test" or dictbook == "testcase":
             tango_all: List[Optional[tuple]] = [
                 {"romanji": "moji", "kanji": "文字", "hiragana": "もじ"},
                 {"romanji": "ningen", "kanji": "人間", "hiragana": "にんげん"},
@@ -115,10 +117,10 @@ async def random_select_word(unit: str, num: int):
             ]
         else:
             tango_all: List[Optional[Dict[str, str]]] = []
-            if unit == "minnanonihongo":
+            if dictbook == "minnanonihongo":
                 tango_all = parse_tango(
-                    dictbook="minnanonihongo.fltrp.shokyuu1",
-                    collection="tango.6.csv",
+                    dictbook=dictbook,
+                    collection=collection,
                 )
             else:
                 return {"warning": "invalid unit"}
@@ -131,7 +133,7 @@ async def random_select_word(unit: str, num: int):
 
         tango_list = random.sample(tango_all, num)
 
-        return {"unit": unit, "tango_list": tango_list}
+        return {"unit": dictbook, "tango_list": tango_list}
     else:
         return {"warning": "without unit"}
 
@@ -147,7 +149,8 @@ async def about():
 
 
 @app.get("/dashboard")
-async def about():
+async def dashboard():
+    # 这个函数后续会变为一站式的面板
     with open(
         os.path.join(os.path.dirname(__file__), "pages", "result.html"),
         "r",
@@ -159,7 +162,7 @@ async def about():
 
 
 @app.get("/result")
-async def about():
+async def result():
     with open(
         os.path.join(os.path.dirname(__file__), "pages", "result.html"),
         "r",
@@ -169,12 +172,12 @@ async def about():
 
 
 @app.get("/status/tango")
-async def about():
+async def status_tango():
     return {"dict_count": int(len(get_tango_list()))}
 
 
 @app.get("/status/listdir")
-async def about():
+async def status_listdir():
     return {"dict_count": os.listdir()}
 
 
