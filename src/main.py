@@ -1,70 +1,16 @@
-import csv
-import io
 import os
 import random
 from datetime import datetime
 from typing import Dict, List, Optional
 
-import requests
 import uvicorn
-from fastapi import FastAPI, File, HTTPException, Path, Response
+from fastapi import FastAPI, HTTPException, Path
 from fastapi.responses import FileResponse, HTMLResponse
 
+from const import ENDPOINT
+from utils import get_tango_list, parse_tango
+
 app = FastAPI()
-
-BASE_URL = "https://laoshubaby.oss-cn-beijing.aliyuncs.com/static/nihongo/nhgbkysms.lock"
-ENDPOINT = {
-    "cn": "http://fastapi-64cd.fcv3.1377713435577244.cn-qingdao.fc.devsapp.net/",
-    "global": "http://nhgbkysms.zeabur.app/",
-}
-
-
-def get_resource_url(dictbook: str, collection: str) -> str:
-    return BASE_URL.replace("nhgbkysms.lock", "") + dictbook + "/" + collection
-
-
-def get_tango(uri: str = "") -> str:
-    if type(uri) == type("str"):
-        if uri[0:4] == "http":
-            r = requests.get(url=uri)
-            return r.content.decode("utf-8")
-        else:
-            pass
-    else:
-        print(".")
-
-
-def parse_tango(
-    dictbook: str = "dictbook", collection: str = "collection"
-) -> List[Optional[Dict[str, str]]]:
-    if (dictbook == "" or dictbook == "dictbook") or (
-        collection == "" or collection == "collection"
-    ):
-        content = get_tango(
-            uri=get_resource_url(
-                "minnanonihongo.fltrp.shokyuu1", "tango.1.csv"
-            )
-        )
-    else:
-        content = get_tango(uri=get_resource_url(dictbook, collection))
-
-    csv_file = io.StringIO(content)
-
-    tango_all = []
-    reader = csv.DictReader(csv_file)
-    for row in reader:
-        tango_all.append(row)
-
-    return tango_all
-
-
-def get_tango_list(mode: str = "local", collection: str = "") -> List[str]:
-    if mode == "local":
-        return os.listdir(
-            os.path.join(os.path.dirname(__file__), "data", "tango")
-        )
-    if mode == "network":
-        return []
 
 
 @app.get("/")
@@ -83,7 +29,7 @@ async def favicon():
 
 
 @app.get("/random/number/{number_range}")
-async def read_random_number(
+async def random_number(
     number_range: int = Path(
         ...,
         description=(
@@ -103,10 +49,10 @@ async def read_random_number(
 
 
 @app.get("/tango/{dictbook}/{collection}/{num}")
-async def random_select_word(dictbook: str,collection:str, num: int):
+async def tango(dictbook: str, collection: str, num: int):
     if dictbook:
         if ".csv" not in collection:
-            collection+=".csv"
+            collection += ".csv"
         if dictbook == "test" or dictbook == "testcase":
             tango_all: List[Optional[tuple]] = [
                 {"romanji": "moji", "kanji": "文字", "hiragana": "もじ"},
