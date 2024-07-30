@@ -1,35 +1,40 @@
-import os
-from datetime import datetime 
-import opendal
+import time
+from datetime import datetime, timezone
 
-S3_BUCKET="laoshubaby"
-S3_REGION="cn-beijing"
-S3_ENDPOINT="https://laoshubaby.oss-cn-beijing.aliyuncs.com"
+from storage import get_file, init_operator, set_file
 
-def init_operator() -> opendal.Operator:
-    """
-    假定用户已经配置过aliyun-python-sdk
-    """
-    return opendal.Operator(
-        scheme="s3",
-        root="/",
-        bucket=S3_BUCKET,
-        region=S3_REGION,
-        endpoint=S3_ENDPOINT,
-        access_key_id=os.environ.get("ALIYUN_ACCESSKEY_ID", ""),
-        secret_access_key=os.environ.get("ALIYUN_ACCESSKEY_SECRET", ""),
-        enable_virtual_host_style="True",
+default_path = "/log"
+
+op = init_operator()
+
+
+def get_utc_timestamp():
+    now_utc = datetime.now(timezone.utc)
+    formatted_time = now_utc.isoformat(timespec="seconds").replace(
+        "+00:00", "Z"
+    )
+    return (
+        formatted_time.replace(":", "-")
+        .replace("-", "-")
+        .replace("T", "_")
+        .replace("Z", "")
     )
 
 
-def get_file(op: opendal.Operator, path: str) -> str:
-    content = op.read(path)
-    return content.decode("utf-8")
+def get_log_file_name():
+    return get_utc_timestamp() + ".log"
 
-def set_file(op: opendal.Operator, path: str, content:str):
-    op.write(path, content.encode('utf-8'))
 
-op = init_operator()
-set_file(op,"/static/nihongo/nhgbkysms.metadata.json1",str(datetime.now()))
-file_content = get_file(op, "/static/nihongo/nhgbkysms.metadata.json")
-print(file_content)
+def meow():
+    print(get_file(op, "/static/nihongo/nhgbkysms.metadata.json"))
+
+
+def put_log_file(content: str, path: str = ""):
+    if len(path) > 0:
+        if path[0] != "/":
+            print("path should start with /")
+            return None
+    set_file(op, default_path + path + "/" + get_log_file_name(), content)
+
+
+put_log_file(content="1234",path="/nhgbkysms")
