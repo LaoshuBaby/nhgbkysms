@@ -12,15 +12,40 @@ from fastapi.responses import FileResponse, HTMLResponse
 
 app = FastAPI()
 
-BASE_URL = "https://laoshubaby.oss-cn-beijing.aliyuncs.com/static/nihongo/nhgbkysms.lock"
+BASE_URL = "https://laoshubaby.oss-cn-beijing.aliyuncs.com/static/nihongo/nhgbkysms.metadata.json"
 ENDPOINT = {
     "cn": "http://fastapi-64cd.fcv3.1377713435577244.cn-qingdao.fc.devsapp.net/",
     "global": "http://nhgbkysms.zeabur.app/",
 }
 
+def get_url_root_metadata() -> str:
+    return BASE_URL
 
-def get_resource_url(dictbook: str, collection: str) -> str:
+def get_url_testbook_metadata(testbook:str) -> str:
+    return BASE_URL.replace("nhgbkysms.lock", "") + testbook + "/" + "metadata.json"
+
+def get_url_resource(dictbook: str, collection: str) -> str:
     return BASE_URL.replace("nhgbkysms.lock", "") + dictbook + "/" + collection
+
+def get_root():
+    """
+    获取根目录的metadata
+    返回有多少本教科书
+    """
+    pass
+
+def get_testbook():
+    """
+    获取一本教科书的metadata
+    """
+    pass
+
+def get_testbook_volume():
+    """
+    获取一本教科书的容量
+    查看其存在多少篇csv
+    """
+    pass
 
 
 def get_tango(uri: str = "") -> str:
@@ -41,12 +66,12 @@ def parse_tango(
         collection == "" or collection == "collection"
     ):
         content = get_tango(
-            uri=get_resource_url(
+            uri=get_url_resource(
                 "minnanonihongo.fltrp.shokyuu1", "tango.1.csv"
             )
         )
     else:
-        content = get_tango(uri=get_resource_url(dictbook, collection))
+        content = get_tango(uri=get_url_resource(dictbook, collection))
 
     csv_file = io.StringIO(content)
 
