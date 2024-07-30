@@ -26,15 +26,15 @@ def get_log_file_name():
 
 
 def meow():
-    print(get_file(op, "/static/nihongo/nhgbkysms.metadata.json"))
+    trash=get_file(op, "/static/nihongo/nhgbkysms.metadata.json")
+    print(trash)
+    return trash
 
 
-def put_log_file(content: str, path: str = ""):
+def nya(msg: str, level:str="INFO", path: str = ""):
+    content=f"[{level}]"
     if len(path) > 0:
         if path[0] != "/":
             print("path should start with /")
             return None
     set_file(op, default_path + path + "/" + get_log_file_name(), content)
-
-
-put_log_file(content="1234",path="/nhgbkysms")

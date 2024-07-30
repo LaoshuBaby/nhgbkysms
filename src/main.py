@@ -10,7 +10,11 @@ import uvicorn
 from fastapi import FastAPI, File, HTTPException, Path, Response
 from fastapi.responses import FileResponse, HTMLResponse
 
+from logger import nya
+
 app = FastAPI()
+nya(msg="[start] nhgbkysms",path="/nhgbkysms")
+
 
 BASE_URL = "https://laoshubaby.oss-cn-beijing.aliyuncs.com/static/nihongo/nhgbkysms.lock"
 ENDPOINT = {
