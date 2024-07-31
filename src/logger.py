@@ -19,7 +19,6 @@ def frame_info():
 
     return f"{info_filename}:{info_funcname}:{info_lineno}"
 
-
 def get_utc_timestamp():
     now_utc = datetime.now(timezone.utc)
     formatted_time = now_utc.isoformat(timespec="milliseconds").replace(
@@ -43,7 +42,7 @@ def get_log_file_name(data: str = None):
         else:
             return get_safe_name(data)
     else:
-        return get_safe_name(data) + ".log"
+        return get_safe_name(get_utc_timestamp()) + ".log"
 
 
 def meow():
@@ -55,10 +54,14 @@ def meow():
 def nya(
     msg: str,
     path: str = "",
-    time: str = get_utc_timestamp(),
+    time: str = None,
     level: str = "INFO",
     func: str = "",
 ):
+    if time == None:
+        time = get_utc_timestamp()
+    else:
+        time = time
     content = f"{time} | {level} | {func} - {msg}"
     if len(path) > 0:
         if path[0] != "/":

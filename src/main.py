@@ -13,7 +13,7 @@ from fastapi.responses import FileResponse, HTMLResponse
 from logger import frame_info, nya
 
 app = FastAPI()
-nya(msg="Server Start!", path="/nhgbkysms", func="nhgbkysms")
+nya(msg="Server Start!", path="/nhgbkysms", func=frame_info())
 
 
 BASE_URL = "https://laoshubaby.oss-cn-beijing.aliyuncs.com/static/nihongo/nhgbkysms.lock"
@@ -73,14 +73,18 @@ def get_tango_list(mode: str = "local", collection: str = "") -> List[str]:
 
 @app.get("/")
 async def hello():
-    return {
+    nya(msg="[controller/] trigged", path="/nhgbkysms", func=frame_info())
+    result = {
         "time": datetime.now().astimezone().isoformat(),
         "note": "Hello World!",
     }
+    nya(msg=f"[controller/] {str(result)}", path="/nhgbkysms", func=frame_info())
+    return result
 
 
 @app.get("/favicon.ico", response_class=FileResponse)
 async def favicon():
+    nya(msg="[controller/favicon.ico] trigged", path="/nhgbkysms", func=frame_info())
     return FileResponse(
         path=os.path.join(os.path.dirname(__file__), "static", "favicon.ico")
     )
@@ -142,7 +146,7 @@ async def random_select_word(unit: str, num: int):
 
 @app.get("/about")
 async def about():
-    nya(msg="66666666", path="/nhgbkysms", func=frame_info())
+    nya(msg="[controller/about] trigged", path="/nhgbkysms", func=frame_info())
     with open(
         os.path.join(os.path.dirname(__file__), "pages", "about.html"),
         "r",
