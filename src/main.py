@@ -15,8 +15,8 @@ from logger import frame_info, nya
 app = FastAPI()
 nya(msg="Server Start!", path="/nhgbkysms", func=frame_info())
 
-
-BASE_URL = "https://laoshubaby.oss-cn-beijing.aliyuncs.com/static/nihongo/nhgbkysms.lock"
+BASE_FILE="nhgbkysms.metadata.json"
+BASE_URL = "https://laoshubaby.oss-cn-beijing.aliyuncs.com/static/nihongo/"
 ENDPOINT = {
     "cn": "http://fastapi-64cd.fcv3.1377713435577244.cn-qingdao.fc.devsapp.net/",
     "global": "http://nhgbkysms.zeabur.app/",
@@ -24,7 +24,9 @@ ENDPOINT = {
 
 
 def get_resource_url(dictbook: str, collection: str) -> str:
-    return BASE_URL.replace("nhgbkysms.lock", "") + dictbook + "/" + collection
+    result=BASE_URL + dictbook + "/" + collection
+    nya(msg=f"[debug] {result}", path="/nhgbkysms", func=frame_info())
+    return result
 
 
 def get_tango(uri: str = "") -> str:
@@ -73,7 +75,7 @@ def get_tango_list(mode: str = "local", collection: str = "") -> List[str]:
 
 @app.get("/")
 async def hello():
-    nya(msg="[controller/] trigged", path="/nhgbkysms", func=frame_info())
+    nya(msg=f"[controller/] trigged", path="/nhgbkysms", func=frame_info())
     result = {
         "time": datetime.now().astimezone().isoformat(),
         "note": "Hello World!",
@@ -84,7 +86,7 @@ async def hello():
 
 @app.get("/favicon.ico", response_class=FileResponse)
 async def favicon():
-    nya(msg="[controller/favicon.ico] trigged", path="/nhgbkysms", func=frame_info())
+    nya(msg=f"[controller/favicon.ico] trigged", path="/nhgbkysms", func=frame_info())
     return FileResponse(
         path=os.path.join(os.path.dirname(__file__), "static", "favicon.ico")
     )
@@ -101,6 +103,7 @@ async def read_random_number(
         ge=1,
     )
 ):
+    nya(msg=f"[controller/random/number/{number_range}] trigged", path="/nhgbkysms", func=frame_info())
     max_value = number_range if number_range else 100
 
     random_number = random.randint(1, max_value)
@@ -112,6 +115,7 @@ async def read_random_number(
 
 @app.get("/tango/{unit}/{num}")
 async def random_select_word(unit: str, num: int):
+    nya(msg=f"[controller/tango/{unit}/{num}] trigged", path="/nhgbkysms", func=frame_info())
     if unit:
         if unit == "test" or unit == "testcase":
             tango_all: List[Optional[tuple]] = [
@@ -146,7 +150,7 @@ async def random_select_word(unit: str, num: int):
 
 @app.get("/about")
 async def about():
-    nya(msg="[controller/about] trigged", path="/nhgbkysms", func=frame_info())
+    nya(msg=f"[controller/about] trigged", path="/nhgbkysms", func=frame_info())
     with open(
         os.path.join(os.path.dirname(__file__), "pages", "about.html"),
         "r",
@@ -157,6 +161,7 @@ async def about():
 
 @app.get("/dashboard")
 async def about():
+    nya(msg=f"[controller/dashboard] trigged", path="/nhgbkysms", func=frame_info())
     with open(
         os.path.join(os.path.dirname(__file__), "pages", "result.html"),
         "r",
@@ -169,6 +174,7 @@ async def about():
 
 @app.get("/result")
 async def about():
+    nya(msg=f"[controller/result] trigged", path="/nhgbkysms", func=frame_info())
     with open(
         os.path.join(os.path.dirname(__file__), "pages", "result.html"),
         "r",
@@ -179,11 +185,13 @@ async def about():
 
 @app.get("/status/tango")
 async def about():
+    nya(msg=f"[controller/status/tango] trigged", path="/nhgbkysms", func=frame_info())
     return {"dict_count": int(len(get_tango_list()))}
 
 
 @app.get("/status/listdir")
 async def about():
+    nya(msg=f"[controller/status/listdir] trigged", path="/nhgbkysms", func=frame_info())
     return {"dict_count": os.listdir()}
 
 
