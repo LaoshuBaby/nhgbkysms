@@ -10,10 +10,10 @@ import uvicorn
 from fastapi import FastAPI, File, HTTPException, Path, Response
 from fastapi.responses import FileResponse, HTMLResponse
 
-from logger import nya
+from logger import frame_info, nya
 
 app = FastAPI()
-nya(msg="[start] nhgbkysms",path="/nhgbkysms")
+nya(msg="Server Start!", path="/nhgbkysms", func="nhgbkysms")
 
 
 BASE_URL = "https://laoshubaby.oss-cn-beijing.aliyuncs.com/static/nihongo/nhgbkysms.lock"
@@ -142,6 +142,7 @@ async def random_select_word(unit: str, num: int):
 
 @app.get("/about")
 async def about():
+    nya(msg="66666666", path="/nhgbkysms", func=frame_info())
     with open(
         os.path.join(os.path.dirname(__file__), "pages", "about.html"),
         "r",
